@@ -17,6 +17,50 @@ export class Wasteful {
   constructor(canvas) {
     this._canvas = canvas;
     this._context = canvas.getContext('2d');
+    this._isRunning = false;
+  }
+
+  startGame() {
+
+    var config = {
+      type: Phaser.AUTO,
+      width: this._canvas.width,
+      height: this._canvas.height,
+      scene: {
+        preload: this._preload,
+        create: this._create,
+        update: this._update,
+        render: this._render
+      }
+    };
+
+    var game = new Phaser.Game(config);
+
+    this._isRunning = true;
+    window.requestAnimationFrame(() => this._updateFrame());
+  }
+
+  _preload() {
+    this.load.setBaseURL('/images/ZedChatter/');
+
+    this.load.image('taco', 'Taco-0.png');
+
+    this.load.image('barrel', 'Barrel-0.png');
+    this.load.image('barrel-fire', 'BarrelFires-0.png');
+    this.load.image('tires', 'Tires-0.png');
+    this.load.image('tires-fire', 'TiresFire-1.png');
+
+    this.load.image('player', 'Hat-YellowShirt-Player-Idle-0.png');
+    this.load.image('zombie', 'Zombie-0.png');
+
+    this.load.image('rocky-ground-0', 'RockyGroundTile-0.png');
+    this.load.image('rocky-ground-1', 'RockyGroundTile-1.png');
+    this.load.image('rocky-ground-2', 'RockyGroundTile-2.png');
+  }
+
+  _create() {
+    this.add.image(42, 42, 'sky');
+
     this._grid = new Grid(this._canvas, this._context);
     this._info = new Info(this._canvas, this._context);
     this._player = new Player(this._grid);
@@ -24,12 +68,6 @@ export class Wasteful {
     this._items = [];
     this._items.push(new Taco(this._grid));
     this._createObstacles();
-    this._isRunning = false;
-  }
-
-  startGame() {
-    this._isRunning = true;
-    window.requestAnimationFrame(() => this._updateFrame());
   }
 
   movePlayer(direction) {
